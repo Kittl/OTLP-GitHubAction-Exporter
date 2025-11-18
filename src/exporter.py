@@ -50,9 +50,9 @@ if "GITHUB_DEBUG" in os.environ and os.getenv('GITHUB_DEBUG').lower() == "true":
 else:
     pass
 
-CUSTOM_LOG_ATTS = log_parser.compile_patterns(os.getenv('CUSTOM_LOG_ATTS'))
-if CUSTOM_LOG_ATTS:
-    print("CUSTOM_LOG_ATTS", CUSTOM_LOG_ATTS)
+CUSTOM_JOB_LOG_ATTS = log_parser.compile_patterns(os.getenv('CUSTOM_JOB_LOG_ATTS'))
+if CUSTOM_JOB_LOG_ATTS:
+    print("CUSTOM_JOB_LOG_ATTS", CUSTOM_JOB_LOG_ATTS)
 
 if OTLP_PROTOCOL in (None, ''):
     OTLP_PROTOCOL = "HTTP"
@@ -163,11 +163,15 @@ for job_index,job in enumerate(job_lst):
         child_0_attributes[cicd_semconv.CICD_PIPELINE_TASK_RUN_URL_FULL] = job['html_url']
 
         # Parse additional attributes from logs
-        if CUSTOM_LOG_ATTS:
-            job_number = len(job_lst) - job_index - 1 # for some reason the order is reversed
+        if CUSTOM_JOB_LOG_ATTS:
+            # Logs in the archive are indexed in reverse order from how they appear in the job list.
+            job_number = len(job_lst) - job_index - 1
             try:
+                # These logs are downloaded via GitHub API before enumerating jobs.
+                # Unfortunately GitHub docs do not mention structure of the logs archive, so this is based on observation.
+                # Example file name: "1_Build.txt"
                 with open ("./logs/"+str(job_number)+"_"+str(job['name'].replace("/",""))+".txt") as f:
-                    child_0_attributes.update(log_parser.parse_attributes_from_log(f, CUSTOM_LOG_ATTS))
+                    child_0_attributes.update(log_parser.parse_attributes_from_log(f, CUSTOM_JOB_LOG_ATTS))
             except Exception as e:
                 print("Error parsing additional attributes from logs for job ->",job['name'],"<- due to error",e)
 

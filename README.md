@@ -56,7 +56,7 @@ This means it will run whenever any of your other workflows complete - which mea
 
 `GITHUB_DEBUG` - see [Troubleshooting](#Troubleshooting)
 
-`CUSTOM_LOG_ATTRS` - Allows additional attributes to be parsed from logs based on specified patterns. Patterns are specified in key=value format, where key specifies attribute name and value is a regex pattern with a single capturing group referencing the value. Key-value pairs should be separated by newlines.
+`CUSTOM_JOB_LOG_ATTRS` - Allows additional attributes to be parsed from job logs based on specified patterns. Patterns are specified in key=value format, where key specifies attribute name and value is a regex pattern with a single capturing group referencing the value. Key-value pairs should be separated by newlines.
 
 ## Examples
 
