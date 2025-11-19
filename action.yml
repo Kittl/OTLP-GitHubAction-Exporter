@@ -3,10 +3,16 @@ name: OTLP Exporter
 description: Exports Workflow Run Telemetry as OTel (OpenTelemetry) traces with logs in context over OTLP
 author: Coralogix
 
+inputs:
+  version:
+    description: Version of the Dockerfile
+    required: true
+    default: ${{ github.sha }}
+
 branding:
   icon: 'activity'
   color: 'green'
 
 runs:
   using: 'docker'
-  image: 'Dockerfile'
+  image: docker://ghcr.io/kittl/otlp-githubaction-exporter:${{ inputs.version }}
